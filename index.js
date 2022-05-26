@@ -45,6 +45,13 @@ async function run() {
             const products = await cursor.toArray();
             res.send(products);
         })
+
+        // post camera data
+        app.post('/cameraProducts', async (req, res) => {
+            const newProducts = req.body;
+            const result = await cameraCollection.insertOne(newProducts);
+            res.send(result);
+        });
     }
     finally {
 
