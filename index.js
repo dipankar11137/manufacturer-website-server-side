@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -50,6 +50,14 @@ async function run() {
         app.post('/cameraProducts', async (req, res) => {
             const newProducts = req.body;
             const result = await cameraCollection.insertOne(newProducts);
+            res.send(result);
+        });
+
+        //Delete camera item
+        app.delete('/cameraProducts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await cameraCollection.deleteOne(query);
             res.send(result);
         });
     }
