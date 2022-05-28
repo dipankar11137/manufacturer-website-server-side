@@ -37,6 +37,8 @@ async function run() {
         const mobileCollection = client.db('tools-manufacture').collection('mobilePhone');
         const laptopCollection = client.db('tools-manufacture').collection('laptopProducts');
         const userCollection = client.db('tools-manufacture').collection('users');
+        const cameraBookingCollection = client.db('tools-manufacture').collection('cameraBooking');
+
 
 
         // users
@@ -58,6 +60,14 @@ async function run() {
             const users = await userCollection.find().toArray();
             res.send(users);
         });
+
+        // check Admin
+        app.get('/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await userCollection.findOne({ email: email });
+            const isAdmin = user.role === 'admin';
+            res.send({ admin: isAdmin })
+        })
 
         // post user admin
         app.put('/user/admin/:email', verifyJWT, async (req, res) => {
@@ -84,7 +94,16 @@ async function run() {
             const cursor = cameraCollection.find(query);
             const products = await cursor.toArray();
             res.send(products);
-        })
+        });
+
+
+        app.get('/cameraProducts/:id', async (req, res) => {
+            const id = req.params.id;
+            // console.log(id);
+            const query = { _id: ObjectId(id) };
+            const booking = await cameraCollection.findOne(query);
+            res.send(booking);
+        });
 
         // mobile
         app.get('/mobilePhone', async (req, res) => {
@@ -108,6 +127,19 @@ async function run() {
             const result = await cameraCollection.insertOne(newProducts);
             res.send(result);
         });
+        // post camera booking data
+        app.post('/cameraBooking', async (req, res) => {
+            const newProducts = req.body;
+            const result = await cameraBookingCollection.insertOne(newProducts);
+            res.send(result);
+        });
+        // get camera booking
+        app.get('/cameraBooking', async (req, res) => {
+            const query = {};
+            const cursor = cameraBookingCollection.find(query);
+            const products = await cursor.toArray();
+            res.send(products);
+        })
 
         //Delete camera item
         app.delete('/cameraProducts/:id', async (req, res) => {
