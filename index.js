@@ -140,9 +140,18 @@ async function run() {
             const products = await cursor.toArray();
             res.send(products);
         })
+        app.get('/cameraBooking/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email };
+            const cursor = cameraBookingCollection.find(query);
+            const bookingEmail = await cursor.toArray();
+            res.send(bookingEmail);
+
+        })
+
 
         //Delete camera item
-        app.delete('/cameraProducts/:id', async (req, res) => {
+        app.delete('/cameraProducts/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await cameraCollection.deleteOne(query);
