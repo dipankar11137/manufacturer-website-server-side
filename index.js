@@ -38,6 +38,8 @@ async function run() {
         const laptopCollection = client.db('tools-manufacture').collection('laptopProducts');
         const userCollection = client.db('tools-manufacture').collection('users');
         const cameraBookingCollection = client.db('tools-manufacture').collection('cameraBooking');
+        const userProfileCollection = client.db('tools-manufacture').collection('userProfile');
+        const reviewsCollection = client.db('tools-manufacture').collection('reviews');
 
 
 
@@ -147,7 +149,36 @@ async function run() {
             const bookingEmail = await cursor.toArray();
             res.send(bookingEmail);
 
-        })
+        });
+
+        // user Profile
+
+        app.post('/userProfile', async (req, res) => {
+            const updateUser = req.body;
+            const result = await userProfileCollection.insertOne(updateUser);
+            res.send(result);
+        });
+        app.get('/userProfile/:email', async (req, res) => {
+            const query = {};
+            const cursor = userProfileCollection.find(query);
+            const user = await cursor.toArray();
+            res.send(user);
+        });
+
+
+        // Reviews 
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review);
+            res.send(result);
+        });
+        app.get('/reviews', async (req, res) => {
+            const query = {};
+            const cursor = reviewsCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review);
+        });
+
 
 
         //Delete camera item
